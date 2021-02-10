@@ -1,5 +1,5 @@
 import * as jwt from "jsonwebtoken";
-import { AuthenticationData } from "../entities/User";
+import { AuthenticationData } from "../";
 import dotenv from "dotenv";
 
 dotenv.config();
