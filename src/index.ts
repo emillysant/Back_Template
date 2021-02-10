@@ -26,7 +26,7 @@ export type User = {
    name: string
    email: string
    password: string
-}
+};
 
 app.post("user/signup", async (req: Request, res: Response) => {
    try {
