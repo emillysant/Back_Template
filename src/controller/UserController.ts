@@ -1,17 +1,8 @@
 import { Request, Response } from "express";
 import { UserInputDTO, LoginInputDTO } from "../business/entities/User";
-import { Authenticator } from "../business/services/Authenticator";
-import { HashManager } from "../business/services/HashManager";
-import { IdGenerator } from "../business/services/IdGenerator";
 import { UserBusiness } from "../business/UserBusiness";
-import { UserDatabase } from "../data/UserDatabase";
 
-const userBusiness = new UserBusiness(
-   new IdGenerator(),
-   new HashManager,
-   new Authenticator(),
-   new UserDatabase()
-);
+const userBusiness = new UserBusiness();
 
 export class UserController {
    async signup(req: Request, res: Response) {

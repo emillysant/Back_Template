@@ -5,22 +5,20 @@ import { HashManager } from "./services/HashManager";
 import { Authenticator } from "./services/Authenticator";
 import { CustomError } from "./error/CustomError";
 
-export class UserBusiness {
+const idGenerator = new IdGenerator()
+const hashManager = new HashManager()
+const authenticator = new Authenticator()
+const userDatabase = new UserDatabase()
 
-   constructor(
-      private idGenerator: IdGenerator,
-      private hashManager: HashManager,
-      private authenticator: Authenticator,
-      private userDatabase: UserDatabase,
-   ) { }
+export class UserBusiness {
 
    async createUser(user: UserInputDTO) {
 
-      const id = this.idGenerator.generate();
+      const id = idGenerator.generate();
 
-      const hashPassword = await this.hashManager.hash(user.password);
+      const hashPassword = await hashManager.hash(user.password);
 
-      await this.userDatabase.createUser(
+      await userDatabase.createUser(
          id,
          user.email,
          user.name,
@@ -28,7 +26,7 @@ export class UserBusiness {
          user.role
       );
 
-      const accessToken = this.authenticator.generateToken({
+      const accessToken = authenticator.generateToken({
          id,
          role: user.role
       });
@@ -38,14 +36,14 @@ export class UserBusiness {
 
    async getUserByEmail(user: LoginInputDTO) {
 
-      const userFromDB = await this.userDatabase.getUserByEmail(user.email);
+      const userFromDB = await userDatabase.getUserByEmail(user.email);
 
-      const passwordIsCorrect = await this.hashManager.compare(
+      const passwordIsCorrect = await hashManager.compare(
          user.password,
          userFromDB.password
       );
 
-      const accessToken = this.authenticator.generateToken({
+      const accessToken = authenticator.generateToken({
          id: userFromDB.id,
          role: userFromDB.role
       });
