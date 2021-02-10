@@ -1,49 +1,44 @@
 import { Request, Response } from "express";
 import { UserInputDTO, LoginInputDTO } from "../business/entities/User";
-import { UserBusiness } from "../business/UserBusiness";
+import * as userBusiness from "../business/UserBusiness";
 
-const userBusiness = new UserBusiness();
+export const signup = async (req: Request, res: Response) => {
+   try {
 
-export class UserController {
-   async signup(req: Request, res: Response) {
-      try {
-
-         const input: UserInputDTO = {
-            email: req.body.email,
-            name: req.body.name,
-            password: req.body.password,
-            role: req.body.role
-         }
-
-         const token = await userBusiness.createUser(input);
-
-         res.status(200).send({ token });
-
-      } catch (error) {
-         res
-            .status(error.statusCode || 400)
-            .send({ error: error.message });
+      const input: UserInputDTO = {
+         email: req.body.email,
+         name: req.body.name,
+         password: req.body.password,
+         role: req.body.role
       }
+
+      const token = await userBusiness.createUser(input);
+
+      res.status(200).send({ token });
+
+   } catch (error) {
+      res
+         .status(error.statusCode || 400)
+         .send({ error: error.message });
    }
+}
 
-   async login(req: Request, res: Response) {
+export const login = async (req: Request, res: Response) => {
 
-      try {
+   try {
 
-         const loginData: LoginInputDTO = {
-            email: req.body.email,
-            password: req.body.password
-         };
+      const loginData: LoginInputDTO = {
+         email: req.body.email,
+         password: req.body.password
+      };
 
-         const token = await userBusiness.getUserByEmail(loginData);
+      const token = await userBusiness.getUserByEmail(loginData);
 
-         res.status(200).send({ token });
+      res.status(200).send({ token });
 
-      } catch (error) {
-         res
-            .status(error.statusCode || 400)
-            .send({ error: error.message });
-      }
+   } catch (error) {
+      res
+         .status(error.statusCode || 400)
+         .send({ error: error.message });
    }
-
 }

@@ -1,57 +1,48 @@
 import { UserInputDTO, LoginInputDTO } from "./entities/User";
-import { UserDatabase } from "../data/UserDatabase";
-import { IdGenerator } from "./services/IdGenerator";
-import { HashManager } from "./services/HashManager";
-import { Authenticator } from "./services/Authenticator";
-import { CustomError } from "./error/CustomError";
+import * as userDatabase  from "../data/UserDatabase";
+import { generateId } from "./services/IdGenerator";
+import { hash, compare } from "./services/HashManager";
+import { generateToken, getData } from "./services/Authenticator";
 
-const idGenerator = new IdGenerator()
-const hashManager = new HashManager()
-const authenticator = new Authenticator()
-const userDatabase = new UserDatabase()
+export const createUser = async (user: UserInputDTO) => {
 
-export class UserBusiness {
+   const id = generateId();
 
-   async createUser(user: UserInputDTO) {
+   const hashPassword = await hash(user.password);
 
-      const id = idGenerator.generate();
+   await userDatabase.createUser(
+      id,
+      user.email,
+      user.name,
+      hashPassword,
+      user.role
+   );
 
-      const hashPassword = await hashManager.hash(user.password);
+   const accessToken = generateToken({
+      id,
+      role: user.role
+   });
 
-      await userDatabase.createUser(
-         id,
-         user.email,
-         user.name,
-         hashPassword,
-         user.role
-      );
+   return accessToken;
+}
 
-      const accessToken = authenticator.generateToken({
-         id,
-         role: user.role
-      });
+export const getUserByEmail = async (user: LoginInputDTO) => {
 
-      return accessToken;
+   const userFromDB = await userDatabase.getUserByEmail(user.email);
+
+   const passwordIsCorrect = await compare(
+      user.password,
+      userFromDB.password
+   );
+
+   const accessToken = generateToken({
+      id: userFromDB.id,
+      role: userFromDB.role
+   });
+
+   if (!passwordIsCorrect) {
+      throw new Error("Invalid credentials!");
    }
 
-   async getUserByEmail(user: LoginInputDTO) {
-
-      const userFromDB = await userDatabase.getUserByEmail(user.email);
-
-      const passwordIsCorrect = await hashManager.compare(
-         user.password,
-         userFromDB.password
-      );
-
-      const accessToken = authenticator.generateToken({
-         id: userFromDB.id,
-         role: userFromDB.role
-      });
-
-      if (!passwordIsCorrect) {
-         throw new CustomError(401, "Invalid credentials!");
-      }
-
-      return accessToken;
-   }
+   return accessToken;
 }
