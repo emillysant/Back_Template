@@ -10,3 +10,31 @@ Introdução à Autenticação;
   <li>Serviços no backend</li>
   <li>Clean Code</li>
 </ul>
+
+### Branch classes
+Conceitos de orientação à objeto
+<ul>
+  <li>Estuturas usando classes</li>
+  <li>Instânciação de classes</li>
+  <li>atributos em métodos</li>
+  <li>Herança e Polimorfismo</li>
+  <li>static</li>
+  <li>Interfaces</li>
+</ul>
+
+### Branch arquitetura
+Introdução Arquitetura de software;
+<ul>
+  <li>Arquitetura em Camadas</li>
+  <li>Estruturando entradas e saídas</li>
+  <li>Relacionando Models</li>
+</ul>
+
+### Branch testes
+Testes utilizando Jest
+<ul>
+  <li>Testes em TS</li>
+  <li>Inversão de Dependências</li>
+  <li>Testes unitários e Mocks</li>
+  <li>Testes no Backend</li>
+</ul>
